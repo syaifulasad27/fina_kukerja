@@ -1,0 +1,23 @@
+{
+  "name": "fina_kukerja",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syaifulasad27/fina_kukerja.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/syaifulasad27/fina_kukerja/issues"
+  },
+  "homepage": "https://github.com/syaifulasad27/fina_kukerja#readme",
+  "dependencies": {
+    "mongodb": "^7.1.0"
+  }
+}
