@@ -2,6 +2,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const { MongoClient } = require('mongodb');
+const { validateUpdateKeys, validateDocumentKeys } = require('./schema_validate');
 
 function loadEnvFromFile(filePath){
   if (!fs.existsSync(filePath)) return {};
@@ -54,6 +55,15 @@ function parseArgs(){
   }
   if (raw.action === 'update' && (!raw.update || typeof raw.update !== 'object')) throw new Error('update payload required');
   if (raw.action !== 'create' && (!raw.filter || typeof raw.filter !== 'object')) throw new Error('filter required for update/soft_delete');
+
+  // schema validation (hard guardrail)
+  if (raw.action === 'create') {
+    const v = validateDocumentKeys(raw.collection, raw.document || {});
+    if (!v.ok) throw new Error(v.error);
+  } else {
+    const v = validateUpdateKeys(raw.collection, raw.update || {});
+    if (!v.ok) throw new Error(v.error);
+  }
 
   const envMap = loadEnvFromFile('/var/www/dashboard-finance/.env');
   const uri = process.env.FINA_MONGO_RO_URI || process.env.FINA_MONGO_RW_URI || envMap.FINA_MONGO_RO_URI || envMap.MONGODB_URI;

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
+const { validateUpdateKeys, validateDocumentKeys } = require('./schema_validate');
 
 function loadEnvFromFile(filePath){
   if (!fs.existsSync(filePath)) return {};
@@ -63,6 +64,15 @@ function args(){
   if (!uri) throw new Error('Missing FINA_MONGO_RW_URI/FINA_MONGO_RO_URI/MONGODB_URI');
   const allow = new Set(cfg.database.collectionsAllowlist || []);
   if (!allow.has(item.collection)) throw new Error('collection not in allowlist');
+
+  // schema validation again at apply time (defense in depth)
+  if (item.action === 'create') {
+    const v = validateDocumentKeys(item.collection, item.document || {});
+    if (!v.ok) throw new Error(v.error);
+  } else {
+    const v = validateUpdateKeys(item.collection, item.update || {});
+    if (!v.ok) throw new Error(v.error);
+  }
 
   const client = new MongoClient(uri, { serverSelectionTimeoutMS: 8000 });
   await client.connect();

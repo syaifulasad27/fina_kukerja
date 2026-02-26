@@ -1,3 +1,5 @@
 # audit log (jsonl)
 {"ts":"2026-02-26T07:27:21.568Z","type":"propose","actor":"syaiful_asad","approvalId":"72214b5b-4ef4-47cf-b3b7-217ba46643f4","collection":"revenues","action":"update","impactCount":0,"status":"pending"}
 {"ts":"2026-02-26T07:27:32.916Z","type":"reject","approvalId":"72214b5b-4ef4-47cf-b3b7-217ba46643f4","approver":"syaiful_asad","reason":"test workflow only"}
+{"ts":"2026-02-26T07:34:41.230Z","type":"propose","actor":"syaiful_asad","approvalId":"5117abf4-cbf5-4d88-b1d2-5d10cc920378","collection":"revenues","action":"update","impactCount":0,"status":"pending"}
+{"ts":"2026-02-26T07:34:48.725Z","type":"reject","approvalId":"5117abf4-cbf5-4d88-b1d2-5d10cc920378","approver":"syaiful_asad","reason":"test valid-schema proposal"}

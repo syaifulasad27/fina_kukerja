@@ -2,6 +2,6 @@
   "action": "update",
   "collection": "revenues",
   "filter": { "source": "TEST_NON_EXISTENT_SOURCE" },
-  "update": { "status": "DRAFT" },
-  "note": "Dry-run style proposal to test approval workflow"
+  "update": { "THIS_FIELD_SHOULD_FAIL": true },
+  "note": "Schema validator must reject this"
 }
