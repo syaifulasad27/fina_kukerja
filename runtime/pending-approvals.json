@@ -1,5 +1,27 @@
 {
   "version": 1,
-  "updatedAt": null,
-  "items": []
+  "updatedAt": "2026-02-26T07:27:32.915Z",
+  "items": [
+    {
+      "approvalId": "72214b5b-4ef4-47cf-b3b7-217ba46643f4",
+      "createdAt": "2026-02-26T07:27:21.568Z",
+      "status": "rejected",
+      "actor": "syaiful_asad",
+      "collection": "revenues",
+      "action": "update",
+      "filter": {
+        "source": "TEST_NON_EXISTENT_SOURCE"
+      },
+      "update": {
+        "reviewFlag": true
+      },
+      "document": null,
+      "impactCount": 0,
+      "filterHash": "8e7a1a9d0da01422",
+      "note": "Dry-run style proposal to test approval workflow",
+      "decidedAt": "2026-02-26T07:27:32.915Z",
+      "approver": "syaiful_asad",
+      "reason": "test workflow only"
+    }
+  ]
 }

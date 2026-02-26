@@ -1,0 +1,7 @@
+{
+  "action": "update",
+  "collection": "revenues",
+  "filter": { "source": "TEST_NON_EXISTENT_SOURCE" },
+  "update": { "reviewFlag": true },
+  "note": "Dry-run style proposal to test approval workflow"
+}
