@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+BASE="/root/.openclaw/workspace/fina_kukerja"
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: fina-approve <approvalId> [approver]"
+  echo "Example: fina-approve 123e4567-e89b-12d3-a456-426614174000 syaiful_asad"
+  exit 1
+fi
+
+APPROVAL_ID="$1"
+APPROVER="${2:-syaiful_asad}"
+
+cd "$BASE"
+node scripts/apply_change.js --approval-id "$APPROVAL_ID" --approver "$APPROVER"

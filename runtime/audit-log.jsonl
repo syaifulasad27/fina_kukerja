@@ -3,3 +3,5 @@
 {"ts":"2026-02-26T07:27:32.916Z","type":"reject","approvalId":"72214b5b-4ef4-47cf-b3b7-217ba46643f4","approver":"syaiful_asad","reason":"test workflow only"}
 {"ts":"2026-02-26T07:34:41.230Z","type":"propose","actor":"syaiful_asad","approvalId":"5117abf4-cbf5-4d88-b1d2-5d10cc920378","collection":"revenues","action":"update","impactCount":0,"status":"pending"}
 {"ts":"2026-02-26T07:34:48.725Z","type":"reject","approvalId":"5117abf4-cbf5-4d88-b1d2-5d10cc920378","approver":"syaiful_asad","reason":"test valid-schema proposal"}
+{"ts":"2026-02-26T07:38:20.907Z","type":"propose","actor":"syaiful_asad","approvalId":"6a67c114-390c-4a05-a6bd-825fcb7ed656","collection":"revenues","action":"update","impactCount":0,"status":"pending"}
+{"ts":"2026-02-26T07:38:29.054Z","type":"reject","approvalId":"6a67c114-390c-4a05-a6bd-825fcb7ed656","approver":"syaiful_asad","reason":"wrapper test"}

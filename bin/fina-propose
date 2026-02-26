@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+BASE="/root/.openclaw/workspace/fina_kukerja"
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: fina-propose <proposal.json> [actor]"
+  echo "Example: fina-propose $BASE/runtime/sample-proposal.json syaiful_asad"
+  exit 1
+fi
+
+PROPOSAL_FILE="$1"
+ACTOR="${2:-syaiful_asad}"
+
+cd "$BASE"
+node scripts/propose_change.js --file "$PROPOSAL_FILE" --actor "$ACTOR"
