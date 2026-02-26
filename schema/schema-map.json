@@ -1,38 +1,1210 @@
 {
   "meta": {
-    "generatedAt": null,
+    "generatedAt": "2026-02-26T07:15:02.916597+00:00",
     "source": "/var/www/dashboard-finance/src/infrastructure/database/models",
-    "version": "draft-1"
+    "version": "auto-1"
   },
   "collections": [
     {
-      "name": "payrolls",
-      "description": "Payroll period summary",
+      "name": "approvalconfigs",
+      "model": "ApprovalConfig",
+      "description": "ApprovalConfig model from dashboard-finance",
       "fields": [
-        { "name": "periodMonth", "type": "number", "required": true },
-        { "name": "periodYear", "type": "number", "required": true },
-        { "name": "totalGross", "type": "number", "required": false },
-        { "name": "totalNett", "type": "number", "required": false },
-        { "name": "totalTax", "type": "number", "required": false },
-        { "name": "totalBpjs", "type": "number", "required": false },
-        { "name": "status", "type": "string", "required": false },
-        { "name": "deleted", "type": "boolean", "required": false },
-        { "name": "deletedAt", "type": "date", "required": false }
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "resourceType",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "EXPENSE",
+            "REVENUE",
+            "JOURNAL",
+            "PAYROLL"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "steps",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "amountThreshold",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
       ],
-      "indexes": ["periodYear", "periodMonth", "status"]
+      "indexes": [
+        "companyId,resourceType"
+      ]
     },
     {
-      "name": "revenues",
-      "description": "Revenue transactions",
-      "fields": [],
+      "name": "approvalrequests",
+      "model": "ApprovalRequest",
+      "description": "ApprovalRequest model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "configId",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "resourceType",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "EXPENSE",
+            "REVENUE",
+            "JOURNAL",
+            "PAYROLL"
+          ]
+        },
+        {
+          "name": "resourceId",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "requestedBy",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "currentStep",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "totalSteps",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "PENDING",
+            "IN_PROGRESS",
+            "APPROVED",
+            "REJECTED",
+            "CANCELLED"
+          ]
+        },
+        {
+          "name": "history",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "rejectionReason",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,status",
+        "resourceType,resourceId",
+        "requestedBy"
+      ]
+    },
+    {
+      "name": "auditlogs",
+      "model": "AuditLog",
+      "description": "AuditLog model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "userId",
+          "type": "objectId",
+          "required": true,
+          "ref": "User"
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "module",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "resourceId",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "oldValue",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "newValue",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "ipAddress",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,module",
+        "companyId,action",
+        "companyId,resourceId",
+        "companyId,createdAt",
+        "createdAt"
+      ]
+    },
+    {
+      "name": "budgets",
+      "model": "Budget",
+      "description": "Budget model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "fiscalYear",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "periodType",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "ANNUAL",
+            "QUARTERLY",
+            "MONTHLY"
+          ]
+        },
+        {
+          "name": "periodNumber",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "departmentId",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "costCenterId",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "projectId",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "lines",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "totalAmount",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "DRAFT",
+            "SUBMITTED",
+            "APPROVED",
+            "REJECTED",
+            "ACTIVE",
+            "CLOSED"
+          ]
+        },
+        {
+          "name": "approvedBy",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "approvedAt",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "createdBy",
+          "type": "objectId",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,fiscalYear,periodType,periodNumber",
+        "companyId,status",
+        "companyId,departmentId"
+      ]
+    },
+    {
+      "name": "chartofaccounts",
+      "model": "ChartOfAccount",
+      "description": "ChartOfAccount model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "type",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "ASSET",
+            "LIABILITY",
+            "EQUITY",
+            "REVENUE",
+            "EXPENSE"
+          ]
+        },
+        {
+          "name": "parentId",
+          "type": "objectId",
+          "required": false,
+          "ref": "ChartOfAccount"
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,code"
+      ]
+    },
+    {
+      "name": "companies",
+      "model": "Company",
+      "description": "Company model from dashboard-finance",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "npwp",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "address",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "timezone",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "logoUrl",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "industry",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
       "indexes": []
+    },
+    {
+      "name": "costcenters",
+      "model": "CostCenter",
+      "description": "CostCenter model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,code"
+      ]
+    },
+    {
+      "name": "departments",
+      "model": "Department",
+      "description": "Department model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "managerId",
+          "type": "objectId",
+          "required": false,
+          "ref": "Employee"
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,name",
+        "companyId,isActive"
+      ]
+    },
+    {
+      "name": "employees",
+      "model": "Employee",
+      "description": "Employee model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "nik",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "npwp",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "bpjsNumber",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "departmentId",
+          "type": "objectId",
+          "required": false,
+          "ref": "Department"
+        },
+        {
+          "name": "costCenterId",
+          "type": "objectId",
+          "required": false,
+          "ref": "CostCenter"
+        },
+        {
+          "name": "employmentStatus",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "PERMANENT",
+            "CONTRACT",
+            "PROBATION"
+          ]
+        },
+        {
+          "name": "joinDate",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "salaryConfig",
+          "type": "ISalaryConfig",
+          "required": true
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "deletedAt",
+          "type": "enum",
+          "required": false,
+          "enum": [
+            "Date",
+            "null"
+          ]
+        },
+        {
+          "name": "deletedBy",
+          "type": "objectId",
+          "required": false,
+          "enum": [
+            "mongoose.Types.ObjectId",
+            "null"
+          ],
+          "ref": "User"
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,nik",
+        "companyId,email",
+        "companyId,isActive",
+        "companyId,departmentId",
+        "companyId,costCenterId",
+        "companyId,employmentStatus"
+      ]
+    },
+    {
+      "name": "exchangerates",
+      "model": "ExchangeRate",
+      "description": "ExchangeRate model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "fromCurrency",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "toCurrency",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "effectiveDate",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "createdBy",
+          "type": "objectId",
+          "required": true,
+          "ref": "User"
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,fromCurrency,toCurrency,effectiveDate"
+      ]
     },
     {
       "name": "expenses",
-      "description": "Expense transactions",
-      "fields": [],
+      "model": "Expense",
+      "description": "Expense model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "vendor",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "tax",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "attachment",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "approvalStatus",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "PENDING",
+            "APPROVED",
+            "REJECTED"
+          ]
+        },
+        {
+          "name": "journalId",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "createdBy",
+          "type": "objectId",
+          "required": true,
+          "ref": "User"
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,approvalStatus",
+        "companyId,date",
+        "companyId,category",
+        "companyId,createdBy"
+      ]
+    },
+    {
+      "name": "journalentries",
+      "model": "JournalEntry",
+      "description": "JournalEntry model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "journalNo",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "MANUAL",
+            "PAYROLL",
+            "REVENUE",
+            "EXPENSE",
+            "TAX"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "DRAFT",
+            "POSTED",
+            "VOID"
+          ]
+        },
+        {
+          "name": "lines",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "createdBy",
+          "type": "objectId",
+          "required": true,
+          "ref": "User"
+        }
+      ],
+      "indexes": [
+        "companyId,journalNo"
+      ]
+    },
+    {
+      "name": "payrolls",
+      "model": "Payroll",
+      "description": "Payroll model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "periodMonth",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "periodYear",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "totalGross",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "totalNett",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "totalTax",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "totalBpjs",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "DRAFT",
+            "PROCESSED",
+            "PAID"
+          ]
+        },
+        {
+          "name": "journalId",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,periodMonth,periodYear"
+      ]
+    },
+    {
+      "name": "payrollslips",
+      "model": "PayrollSlip",
+      "description": "PayrollSlip model from dashboard-finance",
+      "fields": [
+        {
+          "name": "payrollId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Payroll"
+        },
+        {
+          "name": "employeeId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Employee"
+        },
+        {
+          "name": "basicSalary",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "allowancesTotal",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "deductionsTotal",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "bpjsKesehatanAmount",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "bpjsKetenagakerjaanAmount",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "pph21Amount",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "netSalary",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "payrollId,employeeId",
+        "employeeId"
+      ]
+    },
+    {
+      "name": "projects",
+      "model": "Project",
+      "description": "Project model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "departmentId",
+          "type": "objectId",
+          "required": false,
+          "ref": "Department"
+        },
+        {
+          "name": "costCenterId",
+          "type": "objectId",
+          "required": false,
+          "ref": "CostCenter"
+        },
+        {
+          "name": "managerId",
+          "type": "objectId",
+          "required": false,
+          "ref": "Employee"
+        },
+        {
+          "name": "startDate",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "endDate",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "budget",
+          "type": "decimal",
+          "required": false
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "PLANNING",
+            "ACTIVE",
+            "ON_HOLD",
+            "COMPLETED",
+            "CANCELLED"
+          ]
+        },
+        {
+          "name": "isActive",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "createdBy",
+          "type": "objectId",
+          "required": true,
+          "ref": "User"
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,code",
+        "companyId,status",
+        "companyId,departmentId"
+      ]
+    },
+    {
+      "name": "revenues",
+      "model": "Revenue",
+      "description": "Revenue model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "customer",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "invoiceNumber",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "tax",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "name": "paymentMethod",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "BANK_TRANSFER",
+            "CASH",
+            "CREDIT_CARD"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "PAID",
+            "UNPAID",
+            "VOID"
+          ]
+        },
+        {
+          "name": "journalId",
+          "type": "objectId",
+          "required": false
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "createdBy",
+          "type": "objectId",
+          "required": true,
+          "ref": "User"
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "indexes": [
+        "companyId,invoiceNumber",
+        "companyId,status",
+        "companyId,date",
+        "companyId,customer"
+      ]
+    },
+    {
+      "name": "users",
+      "model": "User",
+      "description": "User model from dashboard-finance",
+      "fields": [
+        {
+          "name": "companyId",
+          "type": "objectId",
+          "required": true,
+          "ref": "Company"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "emailVerified",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "image",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "role",
+          "type": "enum",
+          "required": true,
+          "enum": [
+            "SUPER_ADMIN",
+            "FINANCE_ADMIN",
+            "HR_ADMIN",
+            "AUDITOR",
+            "VIEWER"
+          ]
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "updatedAt",
+          "type": "date",
+          "required": true
+        }
+      ],
       "indexes": []
     }
   ],
-  "notes": "Lengkapi fields dari model aktual sebelum production write mode."
+  "notes": "Auto-generated from TypeScript model files. Review before enabling write mode."
 }

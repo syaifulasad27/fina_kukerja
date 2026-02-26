@@ -13,8 +13,15 @@ Dokumen ini menjelaskan konteks bisnis per collection agar Fina tidak salah tafs
 2. revenues
 3. expenses
 
-## TODO Verifikasi
-- [ ] Sinkronkan semua field dari model TS/Mongoose aktual
-- [ ] Validasi tipe numeric/date
-- [ ] Definisikan relasi antar collection
-- [ ] Tandai field sensitif (PII)
+## Status Sinkronisasi Terbaru
+- Sinkronisasi otomatis **sudah dijalankan** dari folder model TypeScript.
+- File terbarui: `schema-map.json`
+- Koleksi terdeteksi: 17
+- Timestamp generator: lihat `meta.generatedAt` pada `schema-map.json`
+
+## TODO Verifikasi Lanjutan
+- [x] Sinkronkan semua field dari model TS/Mongoose aktual
+- [ ] Validasi tipe numeric/date pada query runtime (khusus Decimal128 dan Date)
+- [ ] Definisikan relasi antar collection lintas model (foreign key logical)
+- [ ] Tandai field sensitif (PII) untuk masking otomatis
+- [ ] Tetapkan allowlist final collection yang boleh write
