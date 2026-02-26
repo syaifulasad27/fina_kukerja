@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+BASE="/root/.openclaw/workspace/fina_kukerja"
+
+cd "$BASE"
+[ -f "$BASE/.env" ] && set -a && . "$BASE/.env" && set +a
+node scripts/get_data.js "$@"

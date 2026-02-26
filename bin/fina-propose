@@ -12,4 +12,5 @@ PROPOSAL_FILE="$1"
 ACTOR="${2:-syaiful_asad}"
 
 cd "$BASE"
+[ -f "$BASE/.env" ] && set -a && . "$BASE/.env" && set +a
 node scripts/propose_change.js --file "$PROPOSAL_FILE" --actor "$ACTOR"

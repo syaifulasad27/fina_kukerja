@@ -13,4 +13,5 @@ REASON="${2:-manual reject}"
 APPROVER="${3:-syaiful_asad}"
 
 cd "$BASE"
+[ -f "$BASE/.env" ] && set -a && . "$BASE/.env" && set +a
 node scripts/apply_change.js --approval-id "$APPROVAL_ID" --approver "$APPROVER" --reject --reason "$REASON"

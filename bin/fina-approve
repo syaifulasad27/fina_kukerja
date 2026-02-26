@@ -12,4 +12,5 @@ APPROVAL_ID="$1"
 APPROVER="${2:-syaiful_asad}"
 
 cd "$BASE"
+[ -f "$BASE/.env" ] && set -a && . "$BASE/.env" && set +a
 node scripts/apply_change.js --approval-id "$APPROVAL_ID" --approver "$APPROVER"
