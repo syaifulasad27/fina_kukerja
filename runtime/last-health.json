@@ -1,0 +1,13 @@
+{
+  "checkedAt": null,
+  "db": {
+    "connected": false,
+    "mode": "read-only",
+    "latencyMs": null,
+    "error": null
+  },
+  "schema": {
+    "loaded": false,
+    "source": "/root/.openclaw/workspace/fina_kukerja/schema/schema-map.json"
+  }
+}

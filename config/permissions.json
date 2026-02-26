@@ -1,0 +1,43 @@
+{
+  "roles": {
+    "fina_ro": {
+      "description": "Read-only runtime for Fina",
+      "can": [
+        "schema.read",
+        "data.read",
+        "report.generate"
+      ],
+      "cannot": [
+        "data.write",
+        "data.delete.hard",
+        "db.admin"
+      ]
+    },
+    "fina_rw": {
+      "description": "Write runtime for Fina (approval-gated)",
+      "can": [
+        "schema.read",
+        "data.read",
+        "data.write.create",
+        "data.write.update",
+        "data.write.soft_delete"
+      ],
+      "cannot": [
+        "data.delete.hard",
+        "collection.drop",
+        "db.admin"
+      ]
+    }
+  },
+  "approval": {
+    "enabled": true,
+    "requiredFor": [
+      "data.write.create",
+      "data.write.update",
+      "data.write.soft_delete"
+    ],
+    "approvedBy": [
+      "syaiful_asad"
+    ]
+  }
+}

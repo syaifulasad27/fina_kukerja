@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "generatedAt": null,
+    "source": "/var/www/dashboard-finance/src/infrastructure/database/models",
+    "version": "draft-1"
+  },
+  "collections": [
+    {
+      "name": "payrolls",
+      "description": "Payroll period summary",
+      "fields": [
+        { "name": "periodMonth", "type": "number", "required": true },
+        { "name": "periodYear", "type": "number", "required": true },
+        { "name": "totalGross", "type": "number", "required": false },
+        { "name": "totalNett", "type": "number", "required": false },
+        { "name": "totalTax", "type": "number", "required": false },
+        { "name": "totalBpjs", "type": "number", "required": false },
+        { "name": "status", "type": "string", "required": false },
+        { "name": "deleted", "type": "boolean", "required": false },
+        { "name": "deletedAt", "type": "date", "required": false }
+      ],
+      "indexes": ["periodYear", "periodMonth", "status"]
+    },
+    {
+      "name": "revenues",
+      "description": "Revenue transactions",
+      "fields": [],
+      "indexes": []
+    },
+    {
+      "name": "expenses",
+      "description": "Expense transactions",
+      "fields": [],
+      "indexes": []
+    }
+  ],
+  "notes": "Lengkapi fields dari model aktual sebelum production write mode."
+}

@@ -1,0 +1,27 @@
+{
+  "project": {
+    "name": "dashboard-finance",
+    "rootPath": "/var/www/dashboard-finance",
+    "modelsPath": "/var/www/dashboard-finance/src/infrastructure/database/models"
+  },
+  "database": {
+    "engine": "mongodb",
+    "dbName": "finance_dashboard",
+    "collectionsAllowlist": [
+      "payrolls",
+      "revenues",
+      "expenses",
+      "employees",
+      "bpjs",
+      "taxes",
+      "audit_logs"
+    ],
+    "readUriEnv": "FINA_MONGO_RO_URI",
+    "writeUriEnv": "FINA_MONGO_RW_URI"
+  },
+  "policy": {
+    "defaultMode": "read-only",
+    "requireApprovalForWrite": true,
+    "softDeleteOnly": true
+  }
+}
