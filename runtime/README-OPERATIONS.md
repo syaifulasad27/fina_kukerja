@@ -1,8 +1,10 @@
 # Fina Operations Quick Guide - Kukerja-Backend
 
+**Full Documentation:** See `docs/USAGE-GUIDE.md` for complete usage examples, queries, and troubleshooting.
+
 ## Overview
-Fina is now configured for **Kukerja-Backend** (HRIS + Payroll Outsourcing TMS)
-Previous: dashboard-finance | Current: kukerja-backend
+
+Fina adalah Senior Finance Specialist untuk **KuKerja** HRIS & Payroll Outsourcing System.
 
 ## Commands
 
@@ -24,7 +26,7 @@ fina-reject <approvalId> "reason" syaiful_asad
 ### Schema Operations
 ```bash
 # Regenerate schema map from models
-python3 /root/.openclaw/workspace/fina_kukerja/scripts/sync_schema_map_kukerja.py
+python3 /root/.openclaw/workspace/fina_kukerja/scripts/sync_schema_map.py
 ```
 
 ## Collections (Allowlist)
@@ -130,21 +132,3 @@ KUKERJA_MONGO_RW_URI=mongodb+srv://.../kukerja?retryWrites=true&w=majority
 - **requireApprovalForWrite**: true
 - **softDeleteOnly**: true (hard delete blocked)
 - **Unknown fields**: Blocked by schema validator
-
-## Migration Notes
-
-### From dashboard-finance to kukerja-backend
-| Old | New |
-|-----|-----|
-| `payrolls` | `payouts.salary` + `payouts.salary.results` |
-| `expenses` | `finance.record` (category: OPEX) |
-| `revenues` | `finance.record` (category: REVENUE) |
-| `employees` | `users` (type: Employee) |
-| `bpjs` (generic) | `bpjs.kesehatan.result` + `bpjs.ketenagakerjaan.result` |
-
-## Rollback
-
-If rollback needed:
-1. Restore `data-source.json` from dashboard-finance version
-2. Update `.env` to use `FINA_MONGO_*` variables
-3. Restore `schema-map.json` from backup

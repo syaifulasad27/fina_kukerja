@@ -1331,7 +1331,7 @@
       "indexes": []
     },
     {
-      "name": "user",
+      "name": "users",
       "model": "User",
       "sourceFile": "user.model.js",
       "description": "User model from kukerja-backend",

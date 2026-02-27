@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Fina Propose Change Script - Kukerja-Backend
+ * Phase 5: Write Operations Migration
+ * 
+ * Proposes a data change (create/update/soft_delete) that requires approval.
+ * Changes are queued in pending-approvals.json for review.
+ */
 const fs = require('fs');
 const crypto = require('crypto');
 const { MongoClient } = require('mongodb');
@@ -28,7 +35,17 @@ function hash(obj){ return crypto.createHash('sha256').update(JSON.stringify(obj
 function appendAudit(evt){ fs.appendFileSync(auditPath, JSON.stringify(evt)+"\n"); }
 
 function usage(){
-  console.log('Usage: node propose_change.js --file <proposal.json> [--actor <name>]');
+  console.log('Usage: fina-propose <proposal.json> [actor]');
+  console.log('       node propose_change.js --file <proposal.json> [--actor <name>]');
+  console.log('');
+  console.log('Proposal JSON format:');
+  console.log(JSON.stringify({
+    collection: 'payouts.salary',
+    action: 'update',
+    filter: { _id: '...' },
+    update: { amount: 9000000 },
+    note: 'Salary adjustment for January'
+  }, null, 2));
   process.exit(1);
 }
 
@@ -39,24 +56,49 @@ function parseArgs(){
     if (a[i]==='--file') out.file=a[++i];
     else if (a[i]==='--actor') out.actor=a[++i];
   }
+  if (!out.file && a[0] && !a[0].startsWith('--')) {
+    out.file = a[0];
+    if (a[1]) out.actor = a[1];
+  }
   if (!out.file) usage();
   return out;
 }
 
 (async () => {
   const { file, actor } = parseArgs();
+  
+  if (!fs.existsSync(file)) {
+    throw new Error(`Proposal file not found: ${file}`);
+  }
+  
   const raw = JSON.parse(fs.readFileSync(file,'utf8'));
   const allow = new Set(cfg.database.collectionsAllowlist || []);
-  if (!allow.has(raw.collection)) throw new Error(`collection not allowed: ${raw.collection}`);
+  
+  if (!allow.has(raw.collection)) {
+    throw new Error(`Collection not allowed: ${raw.collection}. Allowed: ${Array.from(allow).slice(0,10).join(', ')}...`);
+  }
 
-  if (!['create','update','soft_delete'].includes(raw.action)) throw new Error('action must be create|update|soft_delete');
+  if (!['create','update','soft_delete'].includes(raw.action)) {
+    throw new Error('Action must be: create | update | soft_delete');
+  }
+  
   if (raw.action === 'soft_delete') {
     raw.update = { ...(raw.update||{}), deleted: true, deletedAt: now() };
   }
-  if (raw.action === 'update' && (!raw.update || typeof raw.update !== 'object')) throw new Error('update payload required');
-  if (raw.action !== 'create' && (!raw.filter || typeof raw.filter !== 'object')) throw new Error('filter required for update/soft_delete');
+  
+  if (raw.action === 'update' && (!raw.update || typeof raw.update !== 'object')) {
+    throw new Error('Update payload required for update action');
+  }
+  
+  if (raw.action === 'create' && (!raw.document || typeof raw.document !== 'object')) {
+    throw new Error('Document payload required for create action');
+  }
+  
+  if (raw.action !== 'create' && (!raw.filter || typeof raw.filter !== 'object')) {
+    throw new Error('Filter required for update/soft_delete actions');
+  }
 
-  // schema validation (hard guardrail)
+  // Schema validation (hard guardrail)
   if (raw.action === 'create') {
     const v = validateDocumentKeys(raw.collection, raw.document || {});
     if (!v.ok) throw new Error(v.error);
@@ -65,22 +107,32 @@ function parseArgs(){
     if (!v.ok) throw new Error(v.error);
   }
 
-  const envMap = loadEnvFromFile('/var/www/dashboard-finance/.env');
-  const uri = process.env.FINA_MONGO_RO_URI || process.env.FINA_MONGO_RW_URI || envMap.FINA_MONGO_RO_URI || envMap.MONGODB_URI;
-  if (!uri) throw new Error('Missing FINA_MONGO_RO_URI/FINA_MONGO_RW_URI/MONGODB_URI');
+  // Load environment from fina_kukerja .env (not dashboard-finance)
+  const envMap = loadEnvFromFile(`${BASE}/.env`);
+  const uri = process.env.KUKERJA_MONGO_RO_URI || process.env.KUKERJA_MONGO_RW_URI || envMap.KUKERJA_MONGO_RO_URI;
+  
+  if (!uri) {
+    throw new Error('Missing KUKERJA_MONGO_RO_URI/KUKERJA_MONGO_RW_URI environment variable');
+  }
 
   const client = new MongoClient(uri, { serverSelectionTimeoutMS: 8000 });
   await client.connect();
   const db = client.db(cfg.database.dbName);
   const col = db.collection(raw.collection);
 
+  // Calculate impact
   let impactCount = 0;
-  if (raw.action === 'create') impactCount = 1;
-  else impactCount = await col.countDocuments(raw.filter || {});
+  if (raw.action === 'create') {
+    impactCount = 1;
+  } else {
+    impactCount = await col.countDocuments(raw.filter || {});
+  }
 
   const approvalId = rid();
   let queue = { version:1, updatedAt:null, items:[] };
-  if (fs.existsSync(queuePath)) queue = JSON.parse(fs.readFileSync(queuePath,'utf8'));
+  if (fs.existsSync(queuePath)) {
+    queue = JSON.parse(fs.readFileSync(queuePath,'utf8'));
+  }
 
   const item = {
     approvalId,
@@ -101,8 +153,30 @@ function parseArgs(){
   queue.updatedAt = now();
   fs.writeFileSync(queuePath, JSON.stringify(queue,null,2));
 
-  appendAudit({ ts: now(), type:'propose', actor, approvalId, collection:raw.collection, action:raw.action, impactCount, status:'pending' });
+  appendAudit({ 
+    ts: now(), 
+    type:'propose', 
+    actor, 
+    approvalId, 
+    collection:raw.collection, 
+    action:raw.action, 
+    impactCount, 
+    status:'pending',
+    note: raw.note || ''
+  });
+  
   await client.close();
 
-  console.log(JSON.stringify({ ok:true, approvalId, impactCount, status:'pending' }, null, 2));
-})().catch(err=>{ console.error('ERROR:', err.message); process.exit(1); });
+  console.log(JSON.stringify({ 
+    ok:true, 
+    approvalId, 
+    impactCount, 
+    status:'pending',
+    collection: raw.collection,
+    action: raw.action,
+    message: `Proposal ${approvalId} created. Awaiting approval.`
+  }, null, 2));
+})().catch(err=>{ 
+  console.error('ERROR:', err.message); 
+  process.exit(1); 
+});
