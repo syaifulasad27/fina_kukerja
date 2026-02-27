@@ -107,7 +107,7 @@ function parseArgs(){
     if (!v.ok) throw new Error(v.error);
   }
 
-  // Load environment from fina_kukerja .env (not dashboard-finance)
+  // Load environment from fina_kukerja .env
   const envMap = loadEnvFromFile(`${BASE}/.env`);
   const uri = process.env.KUKERJA_MONGO_RO_URI || process.env.KUKERJA_MONGO_RW_URI || envMap.KUKERJA_MONGO_RO_URI;
   
