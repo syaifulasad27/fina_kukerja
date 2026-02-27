@@ -1,27 +1,158 @@
 {
   "project": {
-    "name": "dashboard-finance",
-    "rootPath": "/var/www/dashboard-finance",
-    "modelsPath": "/var/www/dashboard-finance/src/infrastructure/database/models"
+    "name": "kukerja-backend",
+    "rootPath": "/var/www/kukerja-backend",
+    "modelsPath": "/var/www/kukerja-backend/src/api/models"
   },
   "database": {
     "engine": "mongodb",
-    "dbName": "finance_dashboard",
+    "dbName": "kukerja",
     "collectionsAllowlist": [
-      "payrolls",
-      "revenues",
-      "expenses",
-      "employees",
-      "bpjs",
-      "taxes",
-      "audit_logs"
+      "payouts.salary",
+      "payouts.salary.results",
+      "payouts.salary.finalize",
+      "payouts.salary.allowances",
+      "bpjs.kesehatan.result",
+      "bpjs.ketenagakerjaan.result",
+      "bpjs.config",
+      "bpjs.adjustment",
+      "pph.monthly",
+      "pph.annual",
+      "reimbursement.transactions",
+      "reimbursement.policy",
+      "finance.record",
+      "finance.record.subCategory",
+      "finance.ewaSubmission",
+      "finance.userAccount",
+      "tms.enrollments",
+      "tms.balances",
+      "tms.invoices",
+      "users",
+      "jobs",
+      "employee.identification",
+      "leave.requests",
+      "overtime",
+      "mainConfig",
+      "adjustmentConfig",
+      "custom.additionDeduction.columns"
     ],
-    "readUriEnv": "FINA_MONGO_RO_URI",
-    "writeUriEnv": "FINA_MONGO_RW_URI"
+    "readUriEnv": "KUKERJA_MONGO_RO_URI",
+    "writeUriEnv": "KUKERJA_MONGO_RW_URI"
   },
   "policy": {
     "defaultMode": "read-only",
     "requireApprovalForWrite": true,
     "softDeleteOnly": true
+  },
+  "constants": {
+    "payoutsSalaryStatuses": [
+      "initial",
+      "queued",
+      "approved",
+      "processed",
+      "failed",
+      "completed",
+      "distributed",
+      "finalized",
+      "invalid"
+    ],
+    "payoutsSalaryFinalizeStatuses": [
+      "initial",
+      "completed",
+      "canceled"
+    ],
+    "bpjsKetenagakerjaanTypes": [
+      "JKK",
+      "JKM",
+      "JHT",
+      "JP"
+    ],
+    "bpjsKetenagakerjaanPrograms": {
+      "PROGRAM1": ["JKK", "JKM"],
+      "PROGRAM2": ["JKK", "JKM", "JHT"],
+      "PROGRAM3": ["JKK", "JKM", "JHT", "JP"]
+    },
+    "pphTerCategories": [
+      "terA",
+      "terB",
+      "terC",
+      "underPayment",
+      "restitution"
+    ],
+    "salaryModels": [
+      "fixSalary",
+      "flexibleSalary",
+      "bonus",
+      "salary"
+    ],
+    "payTypes": [
+      "monthly",
+      "weekly"
+    ],
+    "attendanceBasedOnTypes": [
+      "daily",
+      "hourly"
+    ],
+    "userTypes": [
+      "Employer",
+      "Employee",
+      "centralAbsence"
+    ],
+    "financeRecordCategories": [
+      "revenue",
+      "cogs",
+      "opex",
+      "gross_margin",
+      "overload",
+      "interest",
+      "tax",
+      "liability",
+      "assets",
+      "capex_amortization",
+      "admin",
+      "capital",
+      "debt",
+      "others"
+    ],
+    "reimbursementStatuses": [
+      "pending",
+      "rejected",
+      "approved",
+      "paid"
+    ],
+    "tmsBalanceStatuses": [
+      "pending",
+      "received",
+      "hold",
+      "canceled",
+      "failed",
+      "disputed"
+    ],
+    "managementFeeStatuses": [
+      "percentage",
+      "fix0k",
+      "fix200k",
+      "fix250k",
+      "fix300k",
+      "fix325k",
+      "fix500k",
+      "fix550k",
+      "fix600k",
+      "fix650k",
+      "fix700k",
+      "fix750k",
+      "fix800k",
+      "fix850k",
+      "fix900k",
+      "fix950k",
+      "fix1000k",
+      "serviceFee",
+      "serviceFee25k",
+      "monthlyService"
+    ],
+    "annualNetIncomeCalculationTypes": [
+      "annually",
+      "annualized"
+    ]
   }
 }

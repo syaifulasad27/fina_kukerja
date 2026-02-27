@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-02-26T07:38:29.053Z",
+  "updatedAt": "2026-02-26T08:23:58.509Z",
   "items": [
     {
       "approvalId": "72214b5b-4ef4-47cf-b3b7-217ba46643f4",
@@ -64,6 +64,24 @@
       "decidedAt": "2026-02-26T07:38:29.053Z",
       "approver": "syaiful_asad",
       "reason": "wrapper test"
+    },
+    {
+      "approvalId": "ab79f3ee-2c14-41dc-9bf8-782f8cc28fa3",
+      "createdAt": "2026-02-26T08:23:58.508Z",
+      "status": "pending",
+      "actor": "syaiful_asad",
+      "collection": "revenues",
+      "action": "update",
+      "filter": {
+        "source": "TEST_NON_EXISTENT_SOURCE"
+      },
+      "update": {
+        "status": "DRAFT"
+      },
+      "document": null,
+      "impactCount": 0,
+      "filterHash": "8e7a1a9d0da01422",
+      "note": "Dry-run style proposal to test approval workflow"
     }
   ]
 }
